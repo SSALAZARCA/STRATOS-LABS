@@ -57,10 +57,19 @@ const Admin = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        const adminUser = import.meta.env.VITE_ADMIN_USER || 'santiago.salazar';
-        const adminPass = import.meta.env.VITE_ADMIN_PASSWORD || 'ssc841209';
         
-        if (username === adminUser && password === adminPass) {
+        // Robust environment variable checking
+        const getEnv = (val, fallback) => {
+            if (!val || val === 'undefined' || val === '') return fallback;
+            return val;
+        };
+
+        const adminUser = getEnv(import.meta.env.VITE_ADMIN_USER, 'santiago.salazar');
+        const adminPass = getEnv(import.meta.env.VITE_ADMIN_PASSWORD, 'ssc841209');
+        
+        console.log('Login attempt...'); // Hidden verification
+        
+        if (username.trim() === adminUser && password.trim() === adminPass) {
             setIsLoggedIn(true);
         } else {
             alert('Usuario o contraseña incorrectos');
