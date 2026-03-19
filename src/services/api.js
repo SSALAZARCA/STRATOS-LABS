@@ -1,63 +1,72 @@
-import { supabase } from '../supabaseClient';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 /**
  * Backend Service Layer (Stratos API)
  * Centralizes all Supabase interactions to manage "backend routes" efficiently.
  */
 
-const handleResponse = async (promise) => {
-    try {
-        const { data, error } = await promise;
-        if (error) throw error;
-        return data;
-    } catch (error) {
-        console.error('API Error:', error.message || error);
-        throw error;
+const handleResponse = async (response) => {
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || 'Error en la petición API');
     }
+    return response.json();
 };
 
 // --- PRODUCTS ---
 export const getActiveProducts = () => 
-    handleResponse(supabase.from('products').select('*').eq('status', 'active'));
+    handleResponse(fetch(`${API_URL}/products/active`));
 
 export const getAllProducts = () => 
-    handleResponse(supabase.from('products').select('*'));
+    handleResponse(fetch(`${API_URL}/products`));
 
 export const createProduct = (productData) => 
-    handleResponse(supabase.from('products').insert([productData]).select().single());
+    handleResponse(fetch(`${API_URL}/products`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+    }));
 
 export const deleteProduct = (id) => 
-    handleResponse(supabase.from('products').delete().eq('id', id));
+    handleResponse(fetch(`${API_URL}/products/${id}`, {
+        method: 'DELETE'
+    }));
 
 // --- ORDERS ---
 export const createOrder = (orderData) => 
-    handleResponse(supabase.from('orders').insert([orderData]).select().single());
+    handleResponse(fetch(`${API_URL}/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+    }));
 
 export const getOrders = () => 
-    handleResponse(supabase.from('orders').select('*').order('created_at', { ascending: false }));
+    handleResponse(fetch(`${API_URL}/orders`));
 
 export const getOrderStats = () => 
-    handleResponse(supabase.from('orders').select('total'));
+    handleResponse(fetch(`${API_URL}/orders/stats`));
 
 // --- CONTACTS ---
 export const createContact = (contactData) => 
-    handleResponse(supabase.from('contacts').insert([contactData]).select().single());
+    handleResponse(fetch(`${API_URL}/contacts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactData)
+    }));
 
 export const getContacts = () => 
-    handleResponse(supabase.from('contacts').select('*').order('created_at', { ascending: false }));
+    handleResponse(fetch(`${API_URL}/contacts`));
 
 // --- SETTINGS ---
-export const getSettings = async () => {
-    const data = await handleResponse(supabase.from('settings').select('*'));
-
-    // Convert array of {key, value} to a flat object
-    const settingsMap = {};
-    data.forEach(s => settingsMap[s.key] = s.value);
-    return settingsMap;
-};
+export const getSettings = () => 
+    handleResponse(fetch(`${API_URL}/settings`));
 
 export const updateSetting = (key, value) => 
-    handleResponse(supabase.from('settings').upsert({ key, value, updated_at: new Date() }));
+    handleResponse(fetch(`${API_URL}/settings/${key}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value })
+    }));
 
 export const updateSettingsBatch = async (settingsObj) => {
     const promises = Object.entries(settingsObj).map(([key, value]) => 

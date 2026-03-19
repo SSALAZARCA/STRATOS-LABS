@@ -1,19 +1,46 @@
 version: '3.8'
+
 services:
-  stratos-labs:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - VITE_SUPABASE_URL=https://your-project-url.supabase.co
-        - VITE_SUPABASE_ANON_KEY=your-anon-key-here
-        - VITE_N8N_WEBHOOK_URL=https://n8n-psckg4osc0s0kw0o444ggwks.72.62.130.152.sslip.io/webhook-test/chat-bot
-        - VITE_ADMIN_PASSWORD=admin123
-    ports:
-      - "10500:80"
+  # 1. Database - MySQL
+  db:
+    image: mysql:8.0
     restart: always
     environment:
-      - VITE_SUPABASE_URL=https://your-project-url.supabase.co
-      - VITE_SUPABASE_ANON_KEY=your-anon-key-here
-      - VITE_N8N_WEBHOOK_URL=https://n8n-psckg4osc0s0kw0o444ggwks.72.62.130.152.sslip.io/webhook-test/chat-bot
-      - VITE_ADMIN_PASSWORD=admin123
+      MYSQL_DATABASE: stratos_labs
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-stratos_root_123}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql_schema.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # 2. Backend - Node.js API
+  backend:
+    build:
+      context: ./server
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD:-stratos_root_123}
+      DB_NAME: stratos_labs
+    depends_on:
+      - db
+    ports:
+      - "3001:3001"
+
+  # 3. Frontend - Vite + Nginx
+  frontend:
+    build:
+      context: .
+      args:
+        - VITE_API_URL=http://${VPS_IP:-localhost}:3001/api
+        - VITE_ADMIN_PASSWORD=${VITE_ADMIN_PASSWORD:-admin123}
+    restart: always
+    ports:
+      - "10500:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
