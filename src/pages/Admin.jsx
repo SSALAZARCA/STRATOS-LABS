@@ -9,6 +9,7 @@ import * as api from '../services/api';
 
 const Admin = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [activeTab, setActiveTab] = useState('dashboard');
     const [stats, setStats] = useState({ totalSales: 0, ordersCount: 0, customersCount: 0 });
@@ -56,11 +57,13 @@ const Admin = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        const adminPass = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
-        if (password === adminPass) {
+        const adminUser = import.meta.env.VITE_ADMIN_USER || 'santiago.salazar';
+        const adminPass = import.meta.env.VITE_ADMIN_PASSWORD || 'ssc841209';
+        
+        if (username === adminUser && password === adminPass) {
             setIsLoggedIn(true);
         } else {
-            alert('Contraseña incorrecta');
+            alert('Usuario o contraseña incorrectos');
         }
     };
 
@@ -76,6 +79,15 @@ const Admin = () => {
                         <p style={{ color: 'var(--text-dim)', marginTop: '1rem' }}>Identifíquese para gestionar la plataforma.</p>
                     </div>
                     <form onSubmit={handleLogin}>
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <input
+                                type="text"
+                                placeholder="Usuario Administrador"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                style={{ width: '100%', padding: '1.2rem', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)', borderRadius: '15px', color: '#fff' }}
+                            />
+                        </div>
                         <div style={{ marginBottom: '2rem' }}>
                             <input
                                 type="password"

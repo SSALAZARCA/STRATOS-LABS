@@ -36,7 +36,8 @@ services:
       context: .
       args:
         - VITE_API_URL=http://${VPS_IP:-localhost}:3001/api
-        - VITE_ADMIN_PASSWORD=${VITE_ADMIN_PASSWORD:-admin123}
+        - VITE_ADMIN_USER=${VITE_ADMIN_USER:-santiago.salazar}
+        - VITE_ADMIN_PASSWORD=${VITE_ADMIN_PASSWORD:-ssc841209}
     restart: always
     ports:
       - "10500:80"
