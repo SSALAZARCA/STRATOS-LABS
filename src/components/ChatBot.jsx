@@ -35,7 +35,8 @@ const ChatBot = () => {
 
         // N8N Integration
         try {
-            const url = webhookUrl || 'https://n8n-psckg4osc0s0kw0o444ggwks.72.62.130.152.sslip.io/webhook-test/chat-bot';
+            const fallbackUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n-psckg4osc0s0kw0o444ggwks.72.62.130.152.sslip.io/webhook-test/chat-bot';
+            const url = webhookUrl || fallbackUrl;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {

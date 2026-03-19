@@ -56,7 +56,8 @@ const Admin = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        if (password === 'admin123') {
+        const adminPass = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+        if (password === adminPass) {
             setIsLoggedIn(true);
         } else {
             alert('Contraseña incorrecta');
