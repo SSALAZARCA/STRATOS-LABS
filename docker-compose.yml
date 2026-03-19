@@ -5,15 +5,15 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
-        - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
-        - VITE_N8N_WEBHOOK_URL=${VITE_N8N_WEBHOOK_URL}
-        - VITE_ADMIN_PASSWORD=${VITE_ADMIN_PASSWORD}
+        - VITE_SUPABASE_URL=https://your-project-url.supabase.co
+        - VITE_SUPABASE_ANON_KEY=your-anon-key-here
+        - VITE_N8N_WEBHOOK_URL=https://n8n-psckg4osc0s0kw0o444ggwks.72.62.130.152.sslip.io/webhook-test/chat-bot
+        - VITE_ADMIN_PASSWORD=admin123
     ports:
       - "10500:80"
     restart: always
     environment:
-      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
-      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
-      - VITE_N8N_WEBHOOK_URL=${VITE_N8N_WEBHOOK_URL}
-      - VITE_ADMIN_PASSWORD=${VITE_ADMIN_PASSWORD}
+      - VITE_SUPABASE_URL=https://your-project-url.supabase.co
+      - VITE_SUPABASE_ANON_KEY=your-anon-key-here
+      - VITE_N8N_WEBHOOK_URL=https://n8n-psckg4osc0s0kw0o444ggwks.72.62.130.152.sslip.io/webhook-test/chat-bot
+      - VITE_ADMIN_PASSWORD=admin123
