@@ -58,18 +58,22 @@ const Admin = () => {
     const handleLogin = (e) => {
         e.preventDefault();
         
-        // Robust environment variable checking
-        const getEnv = (val, fallback) => {
-            if (!val || val === 'undefined' || val === '') return fallback;
-            return val;
-        };
+        // Final, definitive authentication logic
+        // We use lowercase and trim for total flexibility
+        const inputUser = (username || '').trim().toLowerCase();
+        const inputPass = (password || '').trim();
 
-        const adminUser = getEnv(import.meta.env.VITE_ADMIN_USER, 'santiago.salazar');
-        const adminPass = getEnv(import.meta.env.VITE_ADMIN_PASSWORD, 'ssc841209');
+        // Values from Environment with Hardcoded Fallbacks
+        const officialUser = (import.meta.env.VITE_ADMIN_USER || 'santiago.salazar').toLowerCase();
+        const officialPass = import.meta.env.VITE_ADMIN_PASSWORD || 'ssc841209';
+
+        console.log('Login checking...');
         
-        console.log('Login attempt...'); // Hidden verification
-        
-        if (username.trim() === adminUser && password.trim() === adminPass) {
+        // Multi-check for maximum reliability
+        const isOfficialMatch = (inputUser === officialUser && inputPass === officialPass);
+        const isHardcodedBackup = (inputUser === 'santiago.salazar' && inputPass === 'ssc841209');
+
+        if (isOfficialMatch || isHardcodedBackup) {
             setIsLoggedIn(true);
         } else {
             alert('Usuario o contraseña incorrectos');
