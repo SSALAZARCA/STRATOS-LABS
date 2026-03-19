@@ -8,8 +8,9 @@ services:
     environment:
       MYSQL_DATABASE: stratos_labs
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-stratos_root_123}
-    ports:
-      - "3306:3306"
+    # Internal port only to avoid conflicts on host
+    # ports:
+    #   - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql_schema.sql:/docker-entrypoint-initdb.d/init.sql
