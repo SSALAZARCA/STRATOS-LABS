@@ -5,7 +5,8 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
  * Centralizes all Supabase interactions to manage "backend routes" efficiently.
  */
 
-const handleResponse = async (response) => {
+const handleResponse = async (responsePromise) => {
+    const response = await responsePromise;
     if (!response.ok) {
         const error = await response.json().catch(() => ({}));
         throw new Error(error.message || 'Error en la petición API');
